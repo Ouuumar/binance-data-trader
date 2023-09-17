@@ -66,5 +66,12 @@ def delete_klines(symbol):
 async def update_klines(symbol, background_tasks: BackgroundTasks):
     """Call ETL to get and update or push new symbol's Klines"""
     
-    background_tasks.add_task(etl, [symbol], client)
+    background_tasks.add_task(etl, [symbol.upper()], client)
     return {symbol : "Pushing in background . . ."}
+
+@api.get("/klines/list/symbol/", tags=["data manipulation"])
+def get_symbol_list():
+    """Get the list of available symbols in the database"""
+
+    query = engine.execute(text("SELECT DISTINCT symbol FROM historical_klines")).fetchall() 
+    return query

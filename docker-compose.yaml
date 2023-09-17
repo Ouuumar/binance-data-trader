@@ -45,7 +45,7 @@ services:
       image: mysql:8.0.32
       container_name: mysql_container
       environment: 
-        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
         MYSQL_USER: ${MYSQL_USER}
         MYSQL_IP: ${MYSQL_IP}
         MYSQL_PORT: ${MYSQL_PORT}

@@ -41,9 +41,9 @@ Go to the root folder **`binance-data-trader`** of the project
 
 # Use the application :dart: ! 
 
-After launching the project, go to [localhost:8080](localhost:8080)
+After launching the project, go to [localhost:8000](localhost:8080)
 
-You can see the documentation here [localhost:8080/docs](localhost:8080/docs) and see what you can do
+You can see the documentation here [localhost:8000/docs](localhost:8080/docs) and see what you can do
 
 To view live Klines go to [localhost:8050](localhost:8050)
 
