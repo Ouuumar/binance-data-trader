@@ -1,8 +1,9 @@
 #!/bin/bash
 
 usage() { 
-    echo "Usage: -f : Run project for first time or changes made
-    -a : Run project if already ran once and no changes
+    echo "Usage: -b : Run project for first time or changes made
+    -i : If need to init airflow
+    -u : Run project if already ran once and no changes
     -d : Down the project" 
 }
 
@@ -12,28 +13,35 @@ export_env() {
     set +a
 }
 
+init_airflow(){
+    docker compose up airflow-init
+}
+
 docker_up_and_build() {
-    docker-compose -f docker-compose.yaml up -d --build
+    docker-compose up -d --build
 }
 
 docker_up() {
-    docker-compose -f docker-compose.yaml up -d
+    docker-compose up -d
 }
 
 docker_down() {
-    docker-compose -f docker-compose.yaml down
+    docker-compose down --volumes --remove-orphans
 }
-
 
 export_env
 
-while getopts ":fadu" option; do
+while getopts ":biudh" option; do
     case $option in
-    f) # Run project for first time or changes made
+    b) # Run project for first time or changes made
         docker_up_and_build
         exit
         ;;
-    a)  # Run project if already ran once and no changes
+    i) # Init airflow
+        init_airflow
+        exit
+        ;;
+    u)  # Run project if already ran once and no changes
         docker_up
         exit
         ;;
@@ -41,7 +49,7 @@ while getopts ":fadu" option; do
         docker_down
         exit
         ;;
-    u) # Documentation help
+    h) # Documentation help
         usage
         exit
         ;;

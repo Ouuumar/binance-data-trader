@@ -74,4 +74,10 @@ def get_symbol_list():
     """Get the list of available symbols in the database"""
 
     query = engine.execute(text("SELECT DISTINCT symbol FROM historical_klines")).fetchall() 
-    return query
+    values = []
+    for dictionnaire in query:
+    # Boucle pour itérer à travers les clés du dictionnaire
+        for cle, valeur in dictionnaire.items():
+            values.append(valeur)
+
+    return values
