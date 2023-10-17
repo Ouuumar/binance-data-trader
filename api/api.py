@@ -1,8 +1,18 @@
 import os
-from functions import *
 from binance import Client
 from dotenv import load_dotenv, find_dotenv
 from fastapi import FastAPI, BackgroundTasks
+import pathlib
+import sys 
+from dotenv import load_dotenv
+from functions import *
+
+load_dotenv()
+
+# current_file = pathlib.Path(__file__).parent.resolve() 
+# sys.path.append(f"{current_file}/..")
+
+# from func.functions import *
 
 client = Client()
 load_dotenv(find_dotenv())
