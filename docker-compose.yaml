@@ -27,6 +27,14 @@ x-airflow-common:
     # WARNING: Use _PIP_ADDITIONAL_REQUIREMENTS option ONLY for a quick checks
     # for other purpose (development, test and especially production usage) build/extend Airflow image.
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- PyMySQL==1.1.0 python-binance==1.0.19}
+    AIRFLOW_UID: AIRFLOW_UID
+    MYSQL_USER: ${MYSQL_USER}
+    MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    MYSQL_IP: ${MYSQL_IP}
+    MYSQL_DATABASE: ${MYSQL_DATABASE}
+    MYSQL_PORT: ${MYSQL_PORT}
+    KLINES_TABLE: ${KLINES_TABLE}    
   volumes:
     # - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
     # - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
