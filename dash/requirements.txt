@@ -8,3 +8,4 @@ requests==2.28.1
 SQLAlchemy==1.4.46
 SQLAlchemy_Utils==0.40.0
 cryptography==39.0.0
+python-dotenv==1.0.0
