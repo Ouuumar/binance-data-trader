@@ -1,42 +1,26 @@
 # Crypto Data Pipelines Application :chart_with_upwards_trend: !
 
-This project allows you to deploy a microservice architecture to live interract with data from Binance API through an home made API
+This project allows you to deploy a microservice architecture to live interract with Klines crypto and visualize it through a built FastAPI and Dash application (real-time dashboard)
 
-You can manipulate this crypto application to store, update and view lively
+You can easily query the API to get different informations on the data which is daily updated.
 
 # Start the project :heavy_check_mark: !
 
 You need [Docker](https://www.docker.com/products/docker-desktop/M) installed
 
-
 Configure your own **`.env`** file with respective credentials for [MySQL](https://www.mysql.com/)
 
 Go to the root folder **`binance-data-trader`** of the project
 
-***For Windows***
-
 - If first time you run the project, enter in your **CLI** :
  
 ```bash 
-   docker-compose up -d --build
+   ./run.sh -b
 ```
-- If containers are stopped and no changes were done (means images are built)
+- If containers are stopped and no changes were done (means images are already built)
 
 ```bash 
-   docker-compose up -d
-```
-
-***For Linux***
-
-- If first time you run the project, enter in your **CLI** :
- 
-```bash 
-   ./run.sh -f
-```
-- If containers are stopped and no changes were done (means images are built)
-
-```bash 
-   ./run.sh -a
+   ./run.sh -u
 ```
 
 # Use the application :dart: ! 
@@ -48,14 +32,6 @@ You can see the documentation here [localhost:8000/docs](localhost:8080/docs) an
 To view live Klines go to [localhost:8050](localhost:8050)
 
 # Stop the project :x: !
-
-***For Windows***
-
-```bash 
-   docker-compose down
-```
-
-***For Linux***
 
 ```bash 
    ./run.sh -d
