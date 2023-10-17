@@ -3,8 +3,10 @@
 .idea/
 
 # Airflow
-./airflow/airflow-*
-./airflow/logs/*
+airflow/airflow-w*
+airflow/logs/*
+airflow/dags/logs/*
+airflow/func
 
 # Vagrant
 .vagrant/
