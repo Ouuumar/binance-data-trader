@@ -3,13 +3,15 @@ from airflow.utils.dates import days_ago
 from datetime import timedelta
 from binance import Client
 from airflow import DAG
-from func.functions import *
-# import pathlib
-# import sys 
+import pathlib
+import sys 
+from dotenv import load_dotenv
 
-# current_file = pathlib.Path(__file__).parent.resolve() 
-# sys.path.append(f"{current_file}/../..")
-# from etl.functions import etl
+load_dotenv()
+
+current_file = pathlib.Path(__file__).parent.resolve() 
+sys.path.append(f"{current_file}/..")
+from func.functions import *
 
 client = Client()
 
