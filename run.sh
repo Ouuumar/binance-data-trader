@@ -17,6 +17,18 @@ init_airflow(){
     docker compose up airflow-init
 }
 
+copy_func() {
+    cp ./func/functions.py ./etl/ 
+    cp ./func/functions.py ./api/
+    mkdir ./airflow/func/ 
+    cp ./func/functions.py ./airflow/func/
+}
+
+delete_copy_func() {
+    rm -f ./etl/functions.py
+    rm -f ./api/functions.py 
+}   
+
 docker_up_and_build() {
     docker-compose up -d --build
 }
@@ -34,7 +46,9 @@ export_env
 while getopts ":biudh" option; do
     case $option in
     b) # Run project for first time or changes made
+        copy_func
         docker_up_and_build
+        delete_copy_func
         exit
         ;;
     i) # Init airflow
