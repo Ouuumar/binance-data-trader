@@ -108,7 +108,7 @@ services:
         - ./create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
       networks:
           pvnet:
-              ipv4_address: 172.1.1.1
+              ipv4_address: 172.1.1.6
       healthcheck:
         test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
         timeout: 20s
@@ -335,4 +335,4 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.1.1.1/16
+        - subnet: 172.1.1.0/24
