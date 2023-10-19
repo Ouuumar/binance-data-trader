@@ -101,12 +101,7 @@ def process_hist_data(data, symbol):
     df = df.astype({"symbol" : "string"})
     return df
 
-def get_symbols():
-    conn = create_con(user=os.environ["MYSQL_USER"], pw=os.environ["MYSQL_PASSWORD"], ip=os.environ["MYSQL_IP"],port=os.environ["MYSQL_PORT"], db=os.environ["MYSQL_DATABASE"])
-    symbols = conn.execute(text("SELECT DISTINCT symbol FROM historical_klines")).fetchall() 
-    return symbols
-
-def etl(client):
+def etl(client, symbols=["SHIBUSDT"]):
     """ Extract, transform and load the symbol's klines data processed
     Parameters 
     ---------------------------------------
@@ -117,7 +112,8 @@ def etl(client):
         Nothing
     """
     conn = create_con(user=os.environ["MYSQL_USER"], pw=os.environ["MYSQL_PASSWORD"], ip=os.environ["MYSQL_IP"],port=os.environ["MYSQL_PORT"], db=os.environ["MYSQL_DATABASE"])
-    symbols = get_symbols()
+    if symbols == None:
+        symbols = conn.execute(text("SELECT DISTINCT symbol FROM historical_klines")).fetchall()
     for crypto in symbols:  
         historical_data = get_hist_klines(conn, str(crypto), os.environ["KLINES_TABLE"], client.KLINE_INTERVAL_1HOUR, client=client)
         print(f"{crypto} downloaded")
