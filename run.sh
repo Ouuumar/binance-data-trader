@@ -18,14 +18,12 @@ init_airflow(){
 }
 
 copy_func() {
-    cp ./func/functions.py ./etl/ 
     cp ./func/functions.py ./api/
     mkdir ./airflow/func/ 
     cp ./func/functions.py ./airflow/func/
 }
 
 delete_copy_func() {
-    rm -f ./etl/functions.py
     rm -f ./api/functions.py 
 }   
 

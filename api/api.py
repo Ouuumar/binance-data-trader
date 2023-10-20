@@ -76,7 +76,7 @@ def delete_klines(symbol):
 async def update_klines(symbol, background_tasks: BackgroundTasks):
     """Call ETL to get and update or push new symbol's Klines"""
     
-    background_tasks.add_task(etl, [symbol.upper()], client)
+    background_tasks.add_task(etl, client, [symbol.upper()])
     return {symbol : "Pushing in background . . ."}
 
 @api.get("/klines/list/symbol/", tags=["data manipulation"])

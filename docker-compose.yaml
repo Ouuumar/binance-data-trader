@@ -16,7 +16,7 @@ x-airflow-common:
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
-    AIRFLOW__CORE__LOAD_EXAMPLES: 'true'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'
     AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT: ${AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT}
     # yamllint disable rule:line-length
@@ -36,10 +36,6 @@ x-airflow-common:
     MYSQL_PORT: ${MYSQL_DOCKER_PORT}
     KLINES_TABLE: ${KLINES_TABLE}    
   volumes:
-    # - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
-    # - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
-    # - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
-    # - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
     - ${AIRFLOW_PROJ_DIR:-.}/airflow:/opt/airflow
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
@@ -64,32 +60,11 @@ services:
       depends_on:
         mysql-db:
           condition: service_healthy
-      networks:
-          pvnet:
-              ipv4_address: ${FAST_API_IP}
     dash-app:
       build: ./dash
       container_name: dash_container
       ports:
         - ${DASH_HOST_PORT}:${DASH_DOCKER_PORT}
-      networks:
-          pvnet:
-              ipv4_address: ${DASH_IP}
-    etl-app:
-      build: ./etl
-      environment:
-        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-        MYSQL_USER: ${MYSQL_USER}
-        MYSQL_IP: ${MYSQL_IP}
-        MYSQL_PORT: ${MYSQL_DOCKER_PORT}
-        MYSQL_DATABASE: ${MYSQL_DATABASE}
-        KLINES_TABLE: ${KLINES_TABLE}
-      depends_on:
-        mysql-db:
-          condition: service_healthy
-      networks:
-          pvnet:
-              ipv4_address: ${ETL_IP}
     mysql-db:
       image: mysql:8.1.0
       container_name: mysql_container
@@ -106,9 +81,6 @@ services:
       volumes:
         - db:/var/lib/mysql
         - ./create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
-      networks:
-          pvnet:
-              ipv4_address: ${MYSQL_IP}
       healthcheck:
         test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
         timeout: 20s
@@ -276,8 +248,6 @@ services:
 
           exec /entrypoint airflow version
       # yamllint enable rule:line-length
-      # mkdir -p /sources/logs /sources/dags /sources/plugins
-      # chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins}
       environment:
         <<: *airflow-common-env
         _AIRFLOW_DB_MIGRATE: 'true'
@@ -324,15 +294,7 @@ services:
         airflow-init:
           condition: service_completed_successfully
 
-
 volumes:
   postgres-db-volume:
   db:
     driver: local
-
-networks:
-  pvnet:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: ${SUBNET}

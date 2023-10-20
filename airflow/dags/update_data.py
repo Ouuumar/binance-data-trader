@@ -1,5 +1,6 @@
 from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
+from airflow.models import DagModel
 from datetime import timedelta
 from binance import Client
 from airflow import DAG
@@ -15,6 +16,8 @@ from func.functions import *
 
 client = Client()
 
+DAG_ID = "update_data"
+
 args = {
     "owner" : "Omar Allouache",
     "retries" : 0,
@@ -22,7 +25,7 @@ args = {
     "start_date" : days_ago(1)
 }
 
-update_data_dag = DAG(dag_id="update_data", 
+update_data_dag = DAG(dag_id=DAG_ID, 
           description="update avalaible symbols in db",
           default_args=args,
           schedule_interval="@daily",
