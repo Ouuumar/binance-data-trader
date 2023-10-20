@@ -33,7 +33,7 @@ x-airflow-common:
     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     MYSQL_IP: ${MYSQL_IP}
     MYSQL_DATABASE: ${MYSQL_DATABASE}
-    MYSQL_PORT: ${MYSQL_PORT}
+    MYSQL_PORT: ${MYSQL_DOCKER_PORT}
     KLINES_TABLE: ${KLINES_TABLE}    
   volumes:
     # - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
@@ -53,12 +53,12 @@ services:
       build: ./api
       container_name: fastapi_container
       ports:
-        - 8000:8000
+        - ${FAST_API_HOST_PORT}:${FAST_API_DOCKER_PORT}
       environment:
         MYSQL_PASSWORD: ${MYSQL_PASSWORD}
         MYSQL_USER: ${MYSQL_USER}
         MYSQL_IP: ${MYSQL_IP}
-        MYSQL_PORT: ${MYSQL_PORT}
+        MYSQL_PORT: ${MYSQL_DOCKER_PORT}
         MYSQL_DATABASE: ${MYSQL_DATABASE}
         KLINES_TABLE: ${KLINES_TABLE}
       depends_on:
@@ -66,22 +66,22 @@ services:
           condition: service_healthy
       networks:
           pvnet:
-              ipv4_address: 172.1.1.5
+              ipv4_address: ${FAST_API_IP}
     dash-app:
       build: ./dash
       container_name: dash_container
       ports:
-        - 8050:8050
+        - ${DASH_HOST_PORT}:${DASH_DOCKER_PORT}
       networks:
           pvnet:
-              ipv4_address: 172.1.1.4
+              ipv4_address: ${DASH_IP}
     etl-app:
       build: ./etl
       environment:
         MYSQL_PASSWORD: ${MYSQL_PASSWORD}
         MYSQL_USER: ${MYSQL_USER}
         MYSQL_IP: ${MYSQL_IP}
-        MYSQL_PORT: ${MYSQL_PORT}
+        MYSQL_PORT: ${MYSQL_DOCKER_PORT}
         MYSQL_DATABASE: ${MYSQL_DATABASE}
         KLINES_TABLE: ${KLINES_TABLE}
       depends_on:
@@ -89,7 +89,7 @@ services:
           condition: service_healthy
       networks:
           pvnet:
-              ipv4_address: 172.1.1.3
+              ipv4_address: ${ETL_IP}
     mysql-db:
       image: mysql:8.1.0
       container_name: mysql_container
@@ -98,17 +98,17 @@ services:
         MYSQL_USER: ${MYSQL_USER}
         MYSQL_PASSWORD: ${MYSQL_PASSWORD}
         MYSQL_IP: ${MYSQL_IP}
-        MYSQL_PORT: ${MYSQL_PORT}
+        MYSQL_PORT: ${MYSQL_DOCKER_PORT}
         MYSQL_DATABASE: ${MYSQL_DATABASE}
         KLINES_TABLE: ${KLINES_TABLE}
       ports:
-        - 3307:3306
+        - ${MYSQL_HOST_PORT}:${MYSQL_DOCKER_PORT}
       volumes:
         - db:/var/lib/mysql
         - ./create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
       networks:
           pvnet:
-              ipv4_address: 172.1.1.6
+              ipv4_address: ${MYSQL_IP}
       healthcheck:
         test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
         timeout: 20s
@@ -335,4 +335,4 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.1.1.0/24
+        - subnet: ${SUBNET}
