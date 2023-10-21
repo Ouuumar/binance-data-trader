@@ -90,12 +90,13 @@ def process_hist_data(data, symbol):
     # Return processed json klines data into pandas dataframe
     df = pd.DataFrame(data, columns=["open_time", "open", "high", "low", "close", "volume","close_time",\
     "quote_asset_volume", "number_of_trades", "taker_buy_base_asset_volume","taker_buy_quote_asset_volume","ignore"])
-    
-    df.drop("ignore",axis=1, inplace=True)
-    df['open_time'] = pd.to_datetime(df['open_time']/1000, unit='s')
-    df['close_time'] = pd.to_datetime(df['close_time']/1000, unit='s')
 
-    numeric_columns = ['open', 'high', 'low', 'close', 'volume', 'quote_asset_volume', 'taker_buy_base_asset_volume', 'taker_buy_quote_asset_volume']
+    df = df[["open_time", "open", "high", "low", "close", "volume","close_time", "number_of_trades"]]
+        
+    df["open_time"] = pd.to_datetime(df["open_time"]/1000, unit="s")
+    df["close_time"] = pd.to_datetime(df["close_time"]/1000, unit="s")
+
+    numeric_columns = ["open", "high", "low", "close", "volume", "number_of_trades"]
     df[numeric_columns] = df[numeric_columns].apply(pd.to_numeric, axis=1)
     
     df.set_index("open_time", inplace=True)
@@ -104,7 +105,7 @@ def process_hist_data(data, symbol):
     df = df.astype({"symbol" : "string"})
     return df
 
-def etl(client, symbols=["SHIBUSDT"]):
+def etl(client, symbols=["ETHUSDT"]):
     """ Extract, transform and load the symbol's klines data processed
     Parameters 
     ---------------------------------------
@@ -120,7 +121,7 @@ def etl(client, symbols=["SHIBUSDT"]):
         logging.info("No symbols")
         symbols = conn.execute(text("SELECT DISTINCT symbol FROM historical_klines")).fetchall()
     for crypto in symbols:  
-        historical_data = get_hist_klines(conn, str(crypto), os.environ["KLINES_TABLE"], client.KLINE_INTERVAL_1HOUR, client=client)
+        historical_data = get_hist_klines(conn, str(crypto), os.environ["KLINES_TABLE"], client.KLINE_INTERVAL_1DAY, client=client)
         logging.info(f"{crypto} downloaded")
         df = process_hist_data(historical_data, crypto)
         logging.info(f"{crypto} processed")
