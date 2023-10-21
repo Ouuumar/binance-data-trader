@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 def get_hist_klines(conn, symbol, table, client_interval, client): 
     """ Return the symbol's historical klines data from Binance
@@ -110,6 +110,7 @@ def etl(client, symbols=["SHIBUSDT"]):
     ---------------------------------------
         symbols : list
                 the list of symbol to treat
+        client : Binance Client
     Return
     ---------------------------------------
         Nothing
