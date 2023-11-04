@@ -37,6 +37,7 @@ x-airflow-common:
     KLINES_TABLE: ${KLINES_TABLE}    
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/airflow:/opt/airflow
+    - ./models/:/opt/airflow/models
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -79,7 +80,7 @@ services:
       ports:
         - ${MYSQL_HOST_PORT}:${MYSQL_DOCKER_PORT}
       volumes:
-        - db:/var/lib/mysql
+        - data:/var/lib/mysql
         - ./create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
       healthcheck:
         test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
@@ -296,5 +297,4 @@ services:
 
 volumes:
   postgres-db-volume:
-  db:
-    driver: local
+  data:

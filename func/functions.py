@@ -28,16 +28,16 @@ def get_hist_klines(conn, symbol, table, client_interval, client):
     """
     # Check if no symbol's data in table, download data from the oldest date available e.g 1 Aug 2017 (Binance founded date)
     if ((conn.execute(text(f"SELECT COUNT(*) FROM {table} WHERE symbol = '{symbol}'")).scalar() == 0)):
-        logging.info(f"No data for {symbol}, currently getting {symbol} data from 1 Aug 2017 ...")
+        logging.info(f"No data for {symbol}, currently getting {symbol} data from the earliest date available...")
         return client.get_historical_klines(symbol, client_interval, "1 Aug 2017")
     else :
         # Get the most recent date of the data if the table is not empty in order to download from the most recent date
         most_recent_date_in_db = (conn.execute(text(f"SELECT max(open_time) FROM {table} WHERE\
         symbol = '{symbol}'"))).scalar()
-        one_hour_from_db_date= str(datetime.now() + timedelta(hours=1))[:19] # Select only %y-%m-%d %H:%M:%S and add 1 hour
-        one_hour_from_db_date = parser.parse(one_hour_from_db_date) # Parse the date
-        logging.info(f"{symbol} data already present, getting {symbol} data from {most_recent_date_in_db} + 1 hour if exists")
-        return client.get_historical_klines(symbol, client_interval, str(one_hour_from_db_date))
+        one_day_from_db_date= str(datetime.now() + timedelta(days=1))[:19] # Select only %y-%m-%d %H:%M:%S and add 1 hour
+        one_day_from_db_date = parser.parse(one_day_from_db_date) # Parse the date
+        logging.info(f"{symbol} data already present, getting {symbol} data from {most_recent_date_in_db} if exists...")
+        return client.get_historical_klines(symbol, client_interval, str(one_day_from_db_date))
 
 def create_con(user, pw, ip, port, db):
         """ Return the engine (the connection) to interact with MySQL

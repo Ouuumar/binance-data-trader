@@ -1,18 +1,15 @@
-import os
-from binance import Client
-from dotenv import load_dotenv, find_dotenv
 from fastapi import FastAPI, BackgroundTasks
-import pathlib
-import sys 
+from dotenv import load_dotenv, find_dotenv
 from dotenv import load_dotenv
+from binance import Client
+import pandas as pd
+from datetime import date, timedelta
+import pickle 
+import os
+
 from functions import *
 
 load_dotenv()
-
-# current_file = pathlib.Path(__file__).parent.resolve() 
-# sys.path.append(f"{current_file}/..")
-
-# from func.functions import *
 
 client = Client()
 load_dotenv(find_dotenv())
@@ -91,3 +88,12 @@ def get_symbol_list():
             values.append(valeur)
 
     return values
+
+
+@api.get('/predict')
+def predict():
+    model = pickle.load(open("./models/arima_model.pkl", "rb"))
+    tomorow = [pd.Timestamp(date.today() + timedelta(days=1))]
+
+    forecast = pd.Series(data=model.forecast(steps=1).to_list(), index=tomorow)
+    return {'prediction' : forecast}

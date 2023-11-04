@@ -1,9 +1,11 @@
+# syntax = docker/dockerfile:experimental
 FROM python:3.9.4-buster
 
 COPY ./requirements.txt ./
-COPY ./live_viewing.py ./
 
-RUN pip install -U pip && pip install -r ./requirements.txt
+RUN pip install --no-cache-dir -r ./requirements.txt
+    
+COPY ./live_viewing.py ./
 
 EXPOSE 8050
 
